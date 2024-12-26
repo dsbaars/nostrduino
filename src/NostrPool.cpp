@@ -283,3 +283,7 @@ std::vector<NostrString> NostrPool::getRelays() {
 std::vector<NostrRelay *> *NostrPool::getConnectedRelays() {
     return &this->relays;
 }
+
+const std::map<NostrString, NostrSubscription>& NostrPool::getSubscriptions() const {
+    return subscriptions;
+}

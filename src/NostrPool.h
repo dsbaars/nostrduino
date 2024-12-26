@@ -163,6 +163,12 @@ namespace nostr {
          */
         std::vector<NostrRelay *> *getConnectedRelays();
 
+        /**
+         * Get all active subscriptions
+         * @return A map of subscription IDs to NostrSubscription objects
+         */
+        const std::map<NostrString, NostrSubscription>& getSubscriptions() const;
+
       private:
         NostrNoticeCallback noticeCallback = nullptr;
         long long subs = 0;
