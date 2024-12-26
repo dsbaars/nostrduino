@@ -149,6 +149,13 @@ class NWC {
      * @param onRes A callback that will be called when the balance is retrieved (optional)
      * @param onErr A callback that will be called when the balance retrieval fails (optional)
      */
+    void subscribeNotifications(std::function<void(SubscribeNotificationsResponse)> onRes = nullptr, std::function<void(NostrString, NostrString)> onErr = nullptr);
+
+    /**
+     * Get the balance
+     * @param onRes A callback that will be called when the balance is retrieved (optional)
+     * @param onErr A callback that will be called when the balance retrieval fails (optional)
+     */
     void getBalance(std::function<void(GetBalanceResponse)> onRes = nullptr, std::function<void(NostrString, NostrString)> onErr = nullptr);
 
     /**

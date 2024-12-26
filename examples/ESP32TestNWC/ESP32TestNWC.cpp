@@ -7,14 +7,13 @@
 #include "services/NWC.h"
 
 // CONFIGURATION
-#define WIFI_SSID "Wokwi-GUEST"
-#define WIFI_PASS ""
+#define WIFI_SSID "Bulgur"
+#define WIFI_PASS "panged1barmie"
 // IMPORTANT !!! Set a valid NWC url here
 #define NWC_URL                                                                                                                                                                                        \
-    "nostr+walletconnect://69effe7b49a6dd5cf525bd0905917a5005ffe480b58eeb8e861418cf3ae760d9?relay=wss://relay.getalby.com/"                                                                            \
-    "v1&secret=90a44d69283f46b0c917925980c9ade65449a5d85839162387948b42cd58bb1f&lud16=rblb@getalby.com"
+    "nostr+walletconnect://7c3971e292f4c5c35211707672b98a1a56ee6baa4a10bb2c0569b56e0380dd79?relay=wss://relay.getalby.com/v1&secret=59c7c9b2b99cd49554a2cb849e49472985c06d2817830727366d430d113174b5&lud16=zestywave833927@getalby.com"
 // Note: running this setting with default values will send 10 sats to the address below
-#define PAYOUT_ADDRESS "zap@rblb.it"
+#define PAYOUT_ADDRESS "silverowl2@primal.net"
 #define PAYOUT_AMOUNT_MSAT 10000
 
 void testNWC();
@@ -35,7 +34,7 @@ void setup() {
     nostr::esp32::ESP32Platform::initWifi(WIFI_SSID, WIFI_PASS);
 
     Serial.println("Init time");
-    nostr::esp32::ESP32Platform::initTime("pool.ntp.org");
+    nostr::esp32::ESP32Platform::initTime("192.168.20.108");
 
     Serial.println("Init Nostr");
     nostr::esp32::ESP32Platform::initNostr(true);
@@ -61,32 +60,35 @@ void testNWC() {
         transport = nostr::esp32::ESP32Platform::getTransport();
         nwc = new nostr::NWC(transport, NWC_URL);
 
-        nwc->getBalance([&](nostr::GetBalanceResponse resp) { Serial.println("[!] Balance: " + String(resp.balance) + " msatoshis"); },
-                        [](String err, String errMsg) { Serial.println("[!] Error: " + err + " " + errMsg); });
-        nwc->getInfo(
-            [&](nostr::GetInfoResponse resp) {
-                Serial.println("[!] Alias: " + resp.alias);
-                Serial.println("[!] Color: " + resp.color);
-                Serial.println("[!] Pubkey: " + resp.pubkey);
-                Serial.println("[!] Network: " + resp.network);
-                Serial.println("[!] Block height: " + String(resp.blockHeight));
-                Serial.println("[!] Block hash: " + resp.blockHash);
-                Serial.println("[!] Methods: ");
-                for (auto method : resp.methods) {
-                    Serial.println("  " + method);
-                }
-            },
-            [](String err, String errMsg) { Serial.println("[!] Error: " + err + " " + errMsg); });
+        // nwc->getBalance([&](nostr::GetBalanceResponse resp) { Serial.println("[!] Balance: " + String(resp.balance) + " msatoshis"); },
+        //                 [](String err, String errMsg) { Serial.println("[!] Error: " + err + " " + errMsg); });
 
-        transport->getInvoiceFromLNAddr(PAYOUT_ADDRESS, PAYOUT_AMOUNT_MSAT, "Arduino NWC test", [&](String invoice) {
-            if (NostrString_equals(invoice, "")) {
-                Serial.println("[!] Error: Could not get invoice from LN address");
-            }
-            Serial.println("[!] Paying " + String(PAYOUT_AMOUNT_MSAT) + " msats to " + PAYOUT_ADDRESS + " invoice: " + invoice);
-            nwc->payInvoice(
-                invoice, PAYOUT_AMOUNT_MSAT, [&](nostr::PayInvoiceResponse resp) { Serial.println("[!] Payment successful"); },
-                [](String err, String errMsg) { Serial.println("[!] Error: " + err + " " + errMsg); });
-        });
+        // nwc->getInfo(
+        //     [&](nostr::GetInfoResponse resp) {
+        //         Serial.println("[!] Alias: " + resp.alias);
+        //         Serial.println("[!] Color: " + resp.color);
+        //         Serial.println("[!] Pubkey: " + resp.pubkey);
+        //         Serial.println("[!] Network: " + resp.network);
+        //         Serial.println("[!] Block height: " + String(resp.blockHeight));
+        //         Serial.println("[!] Block hash: " + resp.blockHash);
+        //         Serial.println("[!] Methods: ");
+        //         for (auto method : resp.methods) {
+        //             Serial.println("  " + method);
+        //         }
+        //     },
+        //     [](String err, String errMsg) { Serial.println("[!] Error: " + err + " " + errMsg); });
+
+        //  transport->getInvoiceFromLNAddr(PAYOUT_ADDRESS, PAYOUT_AMOUNT_MSAT, "Arduino NWC test", [&](String invoice) {
+        //     if (NostrString_equals(invoice, "")) {
+        //         Serial.println("[!] Error: Could not get invoice from LN address");
+        //     }
+        //     Serial.println("[!] Paying " + String(PAYOUT_AMOUNT_MSAT) + " msats to " + PAYOUT_ADDRESS + " invoice: " + invoice);
+        //     nwc->payInvoice(
+        //         invoice, PAYOUT_AMOUNT_MSAT, [&](nostr::PayInvoiceResponse resp) { Serial.println("[!] Payment successful"); },
+        //         [](String err, String errMsg) { Serial.println("[!] Error: " + err + " " + errMsg); });
+        // });
+
+        nwc->subscribeNotifications();
 
     } catch (std::exception &e) {
         Serial.println("[!] Exception: " + String(e.what()));

@@ -112,6 +112,10 @@ typedef struct s_GetBalanceResponse {
     unsigned long long balance;
 } GetBalanceResponse;
 
+typedef struct s_SubscribeNotificationsResponse {
+    unsigned long long balance;
+} SubscribeNotificationsResponse;
+
 typedef struct s_GetInfoResponse {
     NostrString alias;
     NostrString color;
@@ -142,6 +146,7 @@ class Nip47 {
     SignedNostrEvent listTransactions(unsigned long from = 0, unsigned long until = 0, int limit = 0, int offset = 0, bool unpaid = false, NostrString type = "");
     SignedNostrEvent getBalance();
     SignedNostrEvent getInfo();
+    SignedNostrEvent subscribeNotifications();
 
     void parseResponse(SignedNostrEvent *response, Nip47Response<PayInvoiceResponse> &out);
     void parseResponse(SignedNostrEvent *response, Nip47Response<MultiPayInvoiceResponse> &out);
@@ -153,11 +158,12 @@ class Nip47 {
     void parseResponse(SignedNostrEvent *response, Nip47Response<GetBalanceResponse> &out);
     void parseResponse(SignedNostrEvent *response, Nip47Response<GetInfoResponse> &out);
     static void parseNWC(NostrString, NWCData &);
-
+    Nip04 nip04;
+    
   private:
     NostrString servicePubKey;
     NostrString userPrivKey;
-    Nip04 nip04;
+    
     SignedNostrEvent createEvent(NostrString method, JsonDocument doc);
 };
 } 

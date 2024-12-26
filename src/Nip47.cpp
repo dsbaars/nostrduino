@@ -14,6 +14,10 @@ SignedNostrEvent Nip47::createEvent(NostrString method, JsonDocument doc) {
     return event.sign(this->userPrivKey);
 }
 
+SignedNostrEvent Nip47::subscribeNotifications() {
+
+}
+
 SignedNostrEvent Nip47::payInvoice(NostrString invoice, unsigned long amount) {
     JsonDocument doc;
     JsonObject params = doc["params"].to<JsonObject>();

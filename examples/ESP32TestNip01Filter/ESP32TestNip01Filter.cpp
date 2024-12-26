@@ -9,10 +9,10 @@
 #include "NostrUtils.h"
 #include "time.h"
 
-#define WIFI_SSID "Wokwi-GUEST"
-#define WIFI_PASS ""
+#define WIFI_SSID "Bulgur"
+#define WIFI_PASS "panged1barmie"
 
-#define RELAY "wss://nostr.rblb.it:7777"
+#define RELAY "wss://relay.getalby.com/v1"
 
 std::vector<nostr::NostrPool *> pools;
 void testNIP01Filter();
@@ -33,7 +33,7 @@ void setup() {
     nostr::esp32::ESP32Platform::initWifi(WIFI_SSID, WIFI_PASS);
 
     Serial.println("Init time");
-    nostr::esp32::ESP32Platform::initTime("pool.ntp.org");
+    nostr::esp32::ESP32Platform::initTime("192.168.20.108");
 
     Serial.println("Init Nostr");
     nostr::esp32::ESP32Platform::initNostr(true);
@@ -51,6 +51,10 @@ void loop() {
     for (nostr::NostrPool *pool : pools) {
         pool->loop();
     }
+
+    if (pools.size() < 1) {
+        Serial.println('No connections in pool');
+    }
 }
 
 nostr::Transport *transport;
@@ -63,8 +67,7 @@ void testNIP01Filter() {
         pools.push_back(pool);
         String subId = pool->subscribeMany(
             {relay},
-            {{
-                {"kinds", {"1"}}, {"since", {"1626023056"}}, {"until", {"1846947856"}}, {"limit", {"10"}},
+            {{{"kinds", {"13194", "23196"}}, {"authors", {"7c3971e292f4c5c35211707672b98a1a56ee6baa4a10bb2c0569b56e0380dd79"}}
                 // Filters defined in NIP01 are automatically converted to the correct type
                 // however this library support non-NIP01 filters as well, but you might need to
                 // specify their type manually, if unspecified the code assumes string[]:
